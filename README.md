@@ -1,8 +1,17 @@
 # contacts_application
 
-A new Flutter project.
+Contacts Application using bloc pattern, sqflight flutter: <br>
+#FEATURE: <br>
+1.Add contacts : useing Bottomsheet, TextFormField <br>
+2.Delete contacts <br>
+3.Update/edit contacts <br>
+4.Call the contacts : open mobile keypad along with contact number <br>
+5.swipe to delete contact <br>
 
-## Getting Started
+## Run the project <br>
+1.flutter clean <br>
+2.flutter pub get <br>
+3.flutter run <br>
 
 This project is a starting point for a Flutter application.
 
