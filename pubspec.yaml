@@ -1,7 +1,7 @@
 name: contacts_application
 description: Houzeo.
 
-publish_to: 'none' 
+publish_to: 'none'
 version: 1.0.0+1
 
 environment:
@@ -9,21 +9,18 @@ environment:
 
 dependencies:
   cupertino_icons: ^1.0.2
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.1
+  sqflite: ^2.2.4+1
+  url_launcher: ^6.1.9
 
 dev_dependencies:
+  flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^2.0.0
-
 
 flutter:
 
   uses-material-design: true
-
-        
-    
-    
-                                      
