@@ -9,7 +9,7 @@ class ContactsBloc extends Bloc<ContactsEvents, ContactsStates> {
   ContactsBloc() : super(InitialState()) {
     //event fetch contacts from Database
     //emit GetContacts state with [List<ContactsDetail>]
-    // on<GetContactsEvent>(_onGetContactsEvent);
+    
     on<GetContactsEvent>((event, emit) async {
       try {
         List<ContactsDetail> contacts = await repository.getContacts();
@@ -25,7 +25,6 @@ class ContactsBloc extends Bloc<ContactsEvents, ContactsStates> {
         final number = event.number;
 
         await repository.addToContacts(name, number);
-        // emit(AddContactsState());
         List<ContactsDetail> contacts = await repository.getContacts();
         emit(GetContacts(contacts: contacts));
       } catch (e) {
@@ -39,7 +38,7 @@ class ContactsBloc extends Bloc<ContactsEvents, ContactsStates> {
         List<ContactsDetail> contacts = await repository.getContacts();
         emit(GetContacts(contacts: contacts));
       } catch (e) {
-        emit(ErrorState(errorMessage: "Error in fetching contacts"));
+        emit(ErrorState(errorMessage: "Error in removing contacts"));
       }
     });
     on<UpdateContactEvent>((event, emit) async {
@@ -52,7 +51,7 @@ class ContactsBloc extends Bloc<ContactsEvents, ContactsStates> {
 
         emit(GetContacts(contacts: contacts));
       } catch (e) {
-        emit(ErrorState(errorMessage: "Error in fetching contacts"));
+        emit(ErrorState(errorMessage: "Error in updating contacts"));
       }
     });
   }

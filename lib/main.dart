@@ -1,3 +1,5 @@
+import 'package:contacts_application/Util/colors.dart';
+import 'package:contacts_application/Util/string_constants.dart';
 import 'package:contacts_application/features/contacts_list/presentation/bloc/contacts_bloc/contacts_bloc.dart';
 import 'package:contacts_application/features/contacts_list/presentation/pages/contacts_list_page.dart';
 
@@ -14,10 +16,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Contacts',
+      title: myContacts,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.grey,
+        primaryColor: mainColor,
         primarySwatch: Colors.grey,
       ),
       home: MultiBlocProvider(providers: [

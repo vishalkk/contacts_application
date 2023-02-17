@@ -1,3 +1,6 @@
+import 'package:contacts_application/Util/colors.dart';
+import 'package:contacts_application/Util/string_constants.dart';
+import 'package:contacts_application/Util/value_constant.dart';
 import 'package:contacts_application/features/contacts_list/domain/contacts_details.dart';
 import 'package:flutter/material.dart';
 
@@ -12,13 +15,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final iconColor = Colors.blue;
+  final iconColor = deepPurple;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         actions: [
@@ -27,8 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
           IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
         ],
         elevation: 0,
-        backgroundColor: Colors.white,
-        toolbarHeight: 80,
+        backgroundColor: white,
+        toolbarHeight: toolbarHeight80,
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(
@@ -36,112 +39,115 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              height: 50,
+            const SizedBox(
+              height: sizedBox5,
             ),
-            Container(
-              // height: 300,
-
-              child: CircleAvatar(
-                radius: 50,
-                backgroundImage: NetworkImage(widget.imageUrl),
-                backgroundColor: Colors.transparent,
-              ),
+            CircleAvatar(
+              radius: radius50,
+              backgroundImage: NetworkImage(widget.imageUrl),
+              backgroundColor: transparent,
             ),
             const SizedBox(
               height: 15,
             ),
             Text(
               widget.contactsDetail.name,
-              style: TextStyle(fontSize: 25),
+              style: const TextStyle(fontSize: font25),
             ),
             const SizedBox(
-              height: 20,
+              height: sizedBox20,
             ),
-            Divider(),
-            SizedBox(
-              height: 100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.call, color: iconColor)),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.message_outlined, color: iconColor)),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.videocam_outlined, color: iconColor)),
-                  IconButton(
-                      onPressed: () {},
-                      icon: Icon(Icons.email_outlined, color: iconColor))
-                ],
-              ),
-            ),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SizedBox(
-                height: 130,
-                child: Card(
-                    color: Colors.deepPurple.shade50,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: const [
-                              Text(
-                                "Contact Info",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.w500),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: 80,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.call, color: iconColor)),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 8.0, top: 30),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    // crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                          "+91 ${widget.contactsDetail.number}"),
-                                      Text("Moble")
-                                    ],
-                                  ),
-                                ),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.message_outlined,
-                                        color: iconColor)),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.videocam_outlined,
-                                        color: iconColor)),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    )),
-              ),
-            ),
+            const Divider(),
+            contactInfoWidgetTop(),
+            const Divider(),
+            contactInfoWidget(),
             const SizedBox(
-              height: 20,
+              height: sizedBox20,
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  SizedBox contactInfoWidgetTop() {
+    return SizedBox(
+      height: sizedBox100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+              onPressed: () {}, icon: Icon(Icons.call, color: iconColor)),
+          IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.message_outlined, color: iconColor)),
+          IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.videocam_outlined, color: iconColor)),
+          IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.email_outlined, color: iconColor))
+        ],
+      ),
+    );
+  }
+
+  Padding contactInfoWidget() {
+    return Padding(
+      padding: const EdgeInsets.all(padding10),
+      child: SizedBox(
+        height: 130,
+        child: Card(
+            color: deepPurpleShade,
+            child: Padding(
+              padding: const EdgeInsets.all(padding10),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: const [
+                      Text(
+                        contactInfo,
+                        style: TextStyle(
+                            fontSize: font15, fontWeight: FontWeight.w500),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: sizedBox80,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.call, color: iconColor)),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: padding8, top: padding30),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                  "$countryCode ${widget.contactsDetail.number}"),
+                              const Text(mobile)
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                            onPressed: () {},
+                            icon:
+                                Icon(Icons.message_outlined, color: iconColor)),
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.videocam_outlined,
+                                color: iconColor)),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )),
       ),
     );
   }

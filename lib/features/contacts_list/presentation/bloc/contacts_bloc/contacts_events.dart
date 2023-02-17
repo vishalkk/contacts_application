@@ -3,8 +3,7 @@ abstract class ContactsEvents {
 }
 
 class GetContactsEvent extends ContactsEvents {
-  // @override
-  // List<Object> get props => [];
+
 }
 
 class AddToContactsEvent extends ContactsEvents {

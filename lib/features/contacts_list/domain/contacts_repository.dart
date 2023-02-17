@@ -2,12 +2,6 @@ import 'package:contacts_application/features/contacts_list/data/sql_helper.dart
 import 'package:contacts_application/features/contacts_list/domain/contacts_details.dart';
 
 class ContactsRepository {
-  //methods or data required by application
-  //1.addContacts
-  //2.updateContacts
-  //3.Delete contacts
-  //4.getContacts
-  // final SQLHelper sqlHelper = SQLHelper();
   Future<List<ContactsDetail>> getContacts() async {
     final data = await SQLHelper.getItems();
     List<ContactsDetail> contactsDetails = [];
@@ -26,10 +20,7 @@ class ContactsRepository {
     late int id;
     try {
       await SQLHelper.createItem(name, number);
-    } catch (e) {
-      //
-      print("error: $e");
-    }
+    } catch (e) {}
   }
 
   Future<void> updateContact(int id, String name, String number) async {

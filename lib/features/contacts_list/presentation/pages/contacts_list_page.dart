@@ -1,8 +1,13 @@
+import 'package:contacts_application/Util/colors.dart';
+import 'package:contacts_application/Util/string_constants.dart';
+import 'package:contacts_application/Util/value_constant.dart';
 import 'package:contacts_application/features/contacts_list/domain/contacts_details.dart';
 import 'package:contacts_application/features/contacts_list/presentation/bloc/contacts_bloc/contacts_bloc.dart';
 import 'package:contacts_application/features/contacts_list/presentation/bloc/contacts_bloc/contacts_events.dart';
 import 'package:contacts_application/features/contacts_list/presentation/bloc/contacts_bloc/contacts_states.dart';
 import 'package:contacts_application/features/contacts_list/presentation/pages/profile_page.dart';
+import 'package:contacts_application/features/contacts_list/presentation/widgets/contact_search_bar.dart';
+import 'package:contacts_application/features/contacts_list/presentation/widgets/main_user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,12 +27,12 @@ class _ContactsListPageState extends State<ContactsListPage> {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final searchController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
+  final String url = imageUrl;
   @override
   void initState() {
-    print("--------------------------------------call get contacts event");
     _contactsBloc.add(GetContactsEvent());
-    // context.read<ContactsBloc>().add(GetContactsEvent());
     super.initState();
   }
 
@@ -43,19 +48,20 @@ class _ContactsListPageState extends State<ContactsListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        toolbarHeight: 120,
+        backgroundColor: white,
+        toolbarHeight: toolbarHeight120,
         title: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(
-              height: 20,
+              height: sizedBox20,
             ),
             //contact number serachbar
-            contactsSearchBar(),
+            const ContactSearchBar(),
+
             //login user info
             MainUserInfoWidget(
               contactCount: contactList.length,
@@ -75,189 +81,155 @@ class _ContactsListPageState extends State<ContactsListPage> {
           child: Center(
             child: Column(
               children: [
-                /*
-                                List of contacts
-                                */
-                Expanded(
-                  child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: contactList.length,
-                      itemBuilder: (context, index) {
-                        final contact = contactList[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Dismissible(
-                            direction: DismissDirection.endToStart,
-                            key: Key(contact.name),
-                            onDismissed: (direction) {
-                              // Removes that item the list on swipwe
-                              setState(() {
-                                contactList.removeAt(index);
-                              });
-                              _contactsBloc.add(RemoveContactEvent(
-                                id: contact.id,
-                              ));
+                //List of contacts
 
-                              // Shows the information on Snackbar
-                              // Scaffold.of(context).showSnackBar(
-                              //     SnackBar(content: Text(" dismissed")));
-                            },
-                            background: Container(
-                                color: Colors.red,
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: const [
-                                      Padding(
-                                        padding: EdgeInsets.only(right: 8.0),
-                                        child: Text(
-                                          "DELETE",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                radius: 25,
-                                backgroundImage: NetworkImage(
-                                    'https://i.pravatar.cc/150?img=$index'),
-                                backgroundColor: Colors.transparent,
-                              ),
-                              title: Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          contact.name,
-                                          style: const TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.normal),
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        Text(
-                                          contact.number,
-                                          style: const TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.normal),
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                        onPressed: () {
-                                          _makingPhoneCall(contact.number);
-                                        },
-                                        icon: const Icon(Icons.phone)),
-                                    IconButton(
-                                        onPressed: () {
-                                          _showForm(contact.id, context);
-                                        },
-                                        icon: const Icon(Icons.edit)),
-                                    IconButton(
-                                        onPressed: () {
-                                          _contactsBloc.add(RemoveContactEvent(
-                                            id: contact.id,
-                                          ));
-                                        },
-                                        icon: const Icon(Icons.delete)),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ProfilePage(
-                                              contactsDetail: contact,
-                                              imageUrl:
-                                                  'https://i.pravatar.cc/150?img=$index',
-                                            )));
-                              },
-                            ),
-                          ),
-                        );
-                      }),
-                ),
+                contactsListView(),
               ],
             ),
           )),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepPurple.shade50,
+        backgroundColor: deepPurpleShade,
         onPressed: () => _showForm(null, context),
         child: const Icon(Icons.add),
       ),
-      // ),
     );
   }
 
-  Container contactsSearchBar() {
+  Expanded contactsListView() {
+    return Expanded(
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: contactList.length,
+          itemBuilder: (context, index) {
+            final contact = contactList[index];
+            return Padding(
+              padding: const EdgeInsets.only(top: padding8),
+              child: Dismissible(
+                direction: DismissDirection.endToStart,
+                key: Key(contact.name),
+                onDismissed: (direction) {
+                  // Removes that item the list on swipwe
+                  setState(() {
+                    contactList.removeAt(index);
+                  });
+                  _contactsBloc.add(RemoveContactEvent(
+                    id: contact.id,
+                  ));
+                },
+                background: dismssibleBackgroudWidget(),
+                child: contactTile(index, contact, context),
+              ),
+            );
+          }),
+    );
+  }
+
+  Container dismssibleBackgroudWidget() {
     return Container(
-      width: double.infinity,
-      height: 50,
-      decoration: BoxDecoration(
-          color: Colors.purple.shade50,
-          borderRadius: BorderRadius.circular(30)),
-      child: TextField(
-        cursorColor: Colors.grey,
-        style: const TextStyle(color: Colors.black),
-        controller: searchController,
-        onChanged: (value) {},
-        decoration: InputDecoration(
-          prefixIcon: const Icon(Icons.menu),
-          suffixIcon: SizedBox(
-            width: 80,
-            child: Row(
-              children: const [
-                //more vertical icon
-                Icon(Icons.more_vert),
-                //searchbar icon
-                CircleAvatar(
-                  radius: 15,
-                  backgroundImage: NetworkImage(
-                    'https://i.pravatar.cc/150?img=1',
-                  ),
-                  backgroundColor: Colors.transparent,
-                ),
-                SizedBox(
-                  width: 10,
-                )
-              ],
+      color: red,
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            Padding(
+              padding: EdgeInsets.only(right: padding8),
+              child: Text(
+                delete,
+                style: TextStyle(
+                    color: white,
+                    fontSize: font20,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          hintText: 'Search contacts',
-          hintStyle: const TextStyle(fontSize: 15.0, color: Colors.grey),
-          border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(50)),
+          ],
         ),
       ),
     );
   }
 
+  ListTile contactTile(
+      int index, ContactsDetail contact, BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+          radius: radius25,
+          backgroundImage: NetworkImage('$url$index'),
+          backgroundColor: transparent),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          contactDetail(contact),
+          const Spacer(),
+          IconButton(
+              onPressed: () {
+                _makingPhoneCall(contact.number);
+              },
+              icon: const Icon(
+                Icons.phone,
+                color: deepPurple,
+              )),
+          IconButton(
+              onPressed: () {
+                _showForm(contact.id, context);
+              },
+              icon: const Icon(Icons.edit, color: deepPurple)),
+          IconButton(
+              onPressed: () {
+                _contactsBloc.add(RemoveContactEvent(
+                  id: contact.id,
+                ));
+              },
+              icon: const Icon(Icons.delete, color: deepPurple)),
+        ],
+      ),
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ProfilePage(
+                      contactsDetail: contact,
+                      imageUrl: '$url$index',
+                    )));
+      },
+    );
+  }
+
+  Column contactDetail(ContactsDetail contact) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          contact.name,
+          style:
+              const TextStyle(fontSize: font20, fontWeight: FontWeight.normal),
+        ),
+        const SizedBox(
+          height: sizedBox10,
+        ),
+        Text(
+          contact.number,
+          style:
+              const TextStyle(fontSize: font13, fontWeight: FontWeight.normal),
+        ),
+      ],
+    );
+  }
+
   final customEnableBorder = const OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.grey, width: 1));
+      borderSide: BorderSide(color: mainColor, width: width1));
   final customFocusBorder = const OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.black54, width: 1.5));
+      borderSide: BorderSide(color: black54, width: width2));
   final customLableStyle = const TextStyle(
-      color: Colors.black54, fontSize: 13, fontWeight: FontWeight.bold);
-  //show bottomsheet
+      color: black54, fontSize: font13, fontWeight: FontWeight.bold);
+
+  //show bottomsheet for adding or updating contacts
   void _showForm(int? id, context) {
-    //if id is present in db update this contact
+    //if id is  present in db update this contact
+    //else create new one
     if (id != null) {
       final existingContact =
           contactList.firstWhere((element) => element.id == id);
       contactNumberController.text = existingContact.number;
+      //separatin full name in two half
       firstNameController.text = existingContact.name.split(" ").first;
       lastNameController.text = existingContact.name.split(" ").last;
     }
@@ -266,7 +238,8 @@ class _ContactsListPageState extends State<ContactsListPage> {
         context: context,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+                topLeft: Radius.circular(radius30),
+                topRight: Radius.circular(radius30))),
         isScrollControlled: true,
         builder: (context) {
           return Padding(
@@ -276,149 +249,37 @@ class _ContactsListPageState extends State<ContactsListPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
-                    color: Colors.deepPurple.shade50,
-                    height: 350,
+                    color: deepPurpleShade,
+                    height: sizedBox350,
                     child: Column(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 50, right: 10.0, top: 10.0, bottom: 10.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "Add new contact",
-                                style: TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(Icons.clear_sharp)),
-                            ],
-                          ),
-                        ),
+                        contactBottomsheetTopHeading(context),
                         SizedBox(
-                          height: 180,
-                          width: 300,
+                          height: sizedBox180,
+                          width: sizedBox300,
                           child: Form(
                               key: _formKey,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    height: 43,
-                                    child: TextFormField(
-                                      controller: contactNumberController,
-                                      keyboardType: TextInputType.phone,
-                                      style: const TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 13,
-                                      ),
-                                      decoration: InputDecoration(
-                                        labelText: "Mobile Number",
-                                        labelStyle: customLableStyle,
-                                        prefixIcon: const Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 12.0, left: 10),
-                                          child: Text(
-                                            "+91",
-                                            style: TextStyle(fontSize: 13),
-                                          ),
-                                        ),
-                                        enabledBorder: customEnableBorder,
-                                        focusedBorder: customFocusBorder,
-                                      ),
-                                    ),
-                                  ),
+                                  contactNumberField(),
                                   const SizedBox(
-                                    height: 20,
+                                    height: sizedBox20,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        height: 43,
-                                        width: 120,
-                                        child: TextFormField(
-                                          controller: firstNameController,
-                                          // onSubmitted: (value) {},
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13,
-                                          ),
-                                          decoration: InputDecoration(
-                                            labelText: "First Name",
-                                            labelStyle: customLableStyle,
-                                            enabledBorder: customEnableBorder,
-                                            focusedBorder: customFocusBorder,
-                                          ),
-                                        ),
-                                      ),
+                                      firstNameField(),
                                       const SizedBox(
-                                        width: 20,
+                                        width: sizedBox20,
                                       ),
-                                      Container(
-                                        height: 43,
-                                        width: 150,
-                                        child: TextFormField(
-                                          controller: lastNameController,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 13,
-                                          ),
-                                          decoration: InputDecoration(
-                                            labelText: "Last Name",
-                                            labelStyle: customLableStyle,
-                                            enabledBorder: customEnableBorder,
-                                            focusedBorder: customFocusBorder,
-                                          ),
-                                        ),
-                                      ),
+                                      lastNameField(),
                                     ],
                                   ),
                                 ],
                               )),
                         ),
-                        ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState != null &&
-                                  _formKey.currentState!.validate()) {
-                                String name = firstNameController.text +
-                                    " " +
-                                    lastNameController.text;
-                                String number = contactNumberController.text;
-                                //if id is not present in db create new contact
-                                if (id == null) {
-                                  _contactsBloc.add(AddToContactsEvent(
-                                    number: number,
-                                    name: name,
-                                  ));
-                                }
-                                if (id != null) {
-                                  _contactsBloc.add(UpdateContactEvent(
-                                    id: id,
-                                    number: number,
-                                    name: name,
-                                  ));
-                                }
-
-                                // Clear the text fields
-                                firstNameController.text = "";
-                                lastNameController.text = "";
-                                contactNumberController.text = "";
-
-                                // Close the bottom sheet
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: const Size(200, 50),
-                                backgroundColor: Colors.deepPurple),
-                            child: Text(
-                              id == null ? 'Create New' : 'Update',
-                              style: const TextStyle(color: Colors.white),
-                            ))
+                        contactButton(id, context)
                       ],
                     )),
               ],
@@ -426,49 +287,168 @@ class _ContactsListPageState extends State<ContactsListPage> {
           );
         });
   }
-}
 
-class MainUserInfoWidget extends StatelessWidget {
-  final int contactCount;
-  const MainUserInfoWidget({
-    required this.contactCount,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
+  Padding contactBottomsheetTopHeading(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(
+          left: padding50, right: padding10, top: padding10, bottom: padding10),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Icon(
-            Icons.person,
-            color: Colors.grey,
-          ),
-          const SizedBox(width: 10),
-
-          /*
-        User email id 
-        */
           const Text(
-            "vishalkajales@gmail.com",
-            style: TextStyle(fontSize: 15, color: Colors.grey),
+            addNewContact,
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          SizedBox(width: 10),
-          /*
-        contacts count
-        */
-          Text(
-            "$contactCount",
-            style: const TextStyle(fontSize: 15, color: Colors.grey),
-          ),
-          const SizedBox(width: 10),
-          const Text(
-            "contacts",
-            style: TextStyle(fontSize: 15, color: Colors.grey),
-          ),
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.clear_sharp)),
         ],
       ),
     );
+  }
+
+  Container lastNameField() {
+    return Container(
+      margin: const EdgeInsets.all(margin5),
+      width: sizedBox120,
+      child: TextFormField(
+        controller: lastNameController,
+        style: const TextStyle(
+          color: black,
+          fontSize: font13,
+        ),
+        decoration: InputDecoration(
+          labelText: lastName,
+          labelStyle: customLableStyle,
+          enabledBorder: customEnableBorder,
+          focusedBorder: customFocusBorder,
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: padding10, horizontal: padding10),
+          border: OutlineInputBorder(
+            borderSide: Divider.createBorderSide(context),
+            borderRadius: BorderRadius.circular(radius10),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return nameValidator;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Container firstNameField() {
+    return Container(
+      margin: const EdgeInsets.all(margin5),
+      width: sizedBox120,
+      child: TextFormField(
+        controller: firstNameController,
+        style: const TextStyle(
+          color: black,
+          fontSize: font13,
+        ),
+        decoration: InputDecoration(
+          labelText: firstName,
+          labelStyle: customLableStyle,
+          enabledBorder: customEnableBorder,
+          focusedBorder: customFocusBorder,
+          contentPadding: const EdgeInsets.symmetric(
+              vertical: padding10, horizontal: padding10),
+          border: OutlineInputBorder(
+            borderSide: Divider.createBorderSide(context),
+            borderRadius: BorderRadius.circular(radius10),
+          ),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return nameValidator;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Container contactNumberField() {
+    return Container(
+      margin: const EdgeInsets.all(margin5),
+      child: TextFormField(
+        controller: contactNumberController,
+        keyboardType: TextInputType.phone,
+        style: const TextStyle(
+          color: black,
+          fontSize: font13,
+        ),
+        decoration: InputDecoration(
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+          labelText: mobileNumber,
+          labelStyle: customLableStyle,
+          prefixIcon: const Padding(
+            padding: EdgeInsets.only(top: padding12, left: padding10),
+            child: Text(
+              countryCode,
+              style: TextStyle(fontSize: font13),
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(radius10),
+          ),
+          enabledBorder: customEnableBorder,
+          focusedBorder: customFocusBorder,
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty || value.length > value10) {
+            return contactNumberValidator;
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  ElevatedButton contactButton(int? id, BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {
+          if (_formKey.currentState != null &&
+              _formKey.currentState!.validate()) {
+            String name =
+                "${firstNameController.text} ${lastNameController.text}";
+            String number = contactNumberController.text;
+            //if id is not present in db create new contact
+            if (id == null) {
+              _contactsBloc.add(AddToContactsEvent(
+                number: number,
+                name: name,
+              ));
+            }
+            if (id != null) {
+              _contactsBloc.add(UpdateContactEvent(
+                id: id,
+                number: number,
+                name: name,
+              ));
+            }
+
+            // Clear the text fields
+            firstNameController.text = "";
+            lastNameController.text = "";
+            contactNumberController.text = "";
+
+            // Close the bottom sheet
+            Navigator.of(context).pop();
+          }
+        },
+        style: ElevatedButton.styleFrom(
+            fixedSize: const Size(sizedBox200, sizedBox5),
+            backgroundColor: deepPurple),
+        child: Text(
+          id == null ? createNew : update,
+          style: const TextStyle(color: white),
+        ));
   }
 }
